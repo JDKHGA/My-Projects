@@ -1,0 +1,29 @@
+<{% extends "layout.html" %}
+{% block content %}
+
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main2.css') }}">
+<div class="app">
+    <h1>Quizzer</h1>
+    <div class="quiz">
+        <h2 id="question">Question goes here</h2>
+<div id="answer-buttons">
+  <div>
+    <button class="btn">Answer 1</button>
+  </div>
+  <div>
+    <button class="btn">Answer 2</button>
+  </div>
+  <div>
+    <button class="btn">Answer 3</button>
+  </div>
+  <div>
+    <button class="btn">Answer 4</button>
+  </div>
+</div>
+
+        <button id="next-btn">Next</button>
+    </div>
+   </div>
+    <script src="{{ url_for('static', filename='GA.js') }}"></script>
+{% endblock content %}
+

@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+    <h1>Welcome to the Quizzer</h1>
+    <p>Test your knowledge with our exciting quizzes!</p>
+        <p>Each topic has a list of 30 questions that you can answer.</p>
+
+    <h2>Choose a Quiz Topic:</h2>
+
+    <div class="options">
+        <div class="options">
+            <a href="/quiz_Co" class="btn">Computers</a><br>
+            <a href="/quiz_MA" class="btn">Mathematics</a><br>
+            <a href="/quiz_Hi" class="btn">History</a><br>
+            <a href="/quiz_Ge" class="btn">Geography</a><br>
+            <a href="/quiz_games" class="btn">Video Games</a><br>
+        </div>
+    </div>
+</div>
+{% endblock content %}
