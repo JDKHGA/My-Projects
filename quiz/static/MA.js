@@ -8,6 +8,9 @@ let questions = [];
 
 async function fetchQuestions() {
   try {
+    // Clear previous questions before fetching new ones
+    clearQuestions();
+
     const response = await fetch("https://opentdb.com/api.php?amount=30&category=19");
     const data = await response.json();
     questions = data.results;
@@ -24,16 +27,24 @@ function startQuiz() {
   showQuestion();
 }
 
+function clearQuestions() {
+  // Clear the questions array
+  questions = [];
+}
+
 function showQuestion() {
   resetState();
   let currentQuestion = questions[currentQuestionIndex];
   let questionNo = currentQuestionIndex + 1;
   questionElement.innerHTML = questionNo + ". " + currentQuestion.question;
 
-  currentQuestion.incorrect_answers.push(currentQuestion.correct_answer);
-  currentQuestion.incorrect_answers.sort(); // Randomize the answer order
+  // Create a copy of the incorrect_answers array
+  let answers = currentQuestion.incorrect_answers.slice();
 
-  currentQuestion.incorrect_answers.forEach((answer) => {
+  answers.push(currentQuestion.correct_answer);
+  answers.sort(); // Randomize the answer order
+
+  answers.forEach((answer) => {
     const button = document.createElement("button");
     button.innerHTML = answer;
     button.classList.add("btn");
