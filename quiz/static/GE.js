@@ -8,12 +8,19 @@ let questions = [];
 
 async function fetchQuestions() {
   try {
-    const response = await fetch("https://opentdb.com/api.php?amount=30&category=22");
+    // Clear previous questions before fetching new ones
+    clearQuestions();
+
+    const response = await fetch("https://opentdb.com/api.php?amount=29&category=22");
     const data = await response.json();
     questions = data.results;
-    startQuiz();
+    if (questions.length > 0) {
+      startQuiz();
+    } else {
+      console.error("No questions fetched.");
+    }
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }
 
@@ -24,16 +31,26 @@ function startQuiz() {
   showQuestion();
 }
 
+function clearQuestions() {
+  // Clear the questions array
+  questions = [];
+}
+
 function showQuestion() {
   resetState();
+  resetButtonStyles(); // Reset button styles
+
   let currentQuestion = questions[currentQuestionIndex];
   let questionNo = currentQuestionIndex + 1;
   questionElement.innerHTML = questionNo + ". " + currentQuestion.question;
 
-  currentQuestion.incorrect_answers.push(currentQuestion.correct_answer);
-  currentQuestion.incorrect_answers.sort(); // Randomize the answer order
+  // Create a copy of the incorrect_answers array
+  let answers = currentQuestion.incorrect_answers.slice();
 
-  currentQuestion.incorrect_answers.forEach((answer) => {
+  answers.push(currentQuestion.correct_answer);
+  answers.sort(); // Randomize the answer order
+
+  answers.forEach((answer) => {
     const button = document.createElement("button");
     button.innerHTML = answer;
     button.classList.add("btn");
@@ -45,7 +62,6 @@ function showQuestion() {
     if (answer === currentQuestion.correct_answer) {
       button.dataset.correct = true;
     }
-    button.addEventListener("click", selectAnswer);
   });
 }
 
@@ -56,8 +72,14 @@ function resetState() {
   }
 }
 
-function selectAnswer(e) {
-  const selectedBtn = e.target;
+function resetButtonStyles() {
+  Array.from(answerButton.children).forEach((button) => {
+    button.classList.remove("correct", "incorrect");
+    button.disabled = false;
+  });
+}
+
+function selectAnswer(selectedBtn) {
   const isCorrect = selectedBtn.dataset.correct === "true";
   if (isCorrect) {
     selectedBtn.classList.add("correct");
@@ -76,7 +98,15 @@ function selectAnswer(e) {
 
 function showScore() {
   resetState();
-  questionElement.innerHTML = `You scored ${score} out of ${questions.length}!`;
+
+  if (score === questions.length) {
+    // If the score is equal to the total number of questions, display a congratulatory message
+    questionElement.innerHTML = `Congratulations! You scored ${score} out of ${questions.length}!`;
+  } else {
+    // Display the regular score message
+    questionElement.innerHTML = `You scored ${score} out of ${questions.length}!`;
+  }
+
   nextButton.innerHTML = "Play Again";
   nextButton.style.display = "block";
 }
@@ -90,6 +120,12 @@ function handleNextButton() {
   }
 }
 
+answerButton.addEventListener("click", (e) => {
+  if (e.target.tagName === "BUTTON") {
+    selectAnswer(e.target);
+  }
+});
+
 nextButton.addEventListener("click", () => {
   if (currentQuestionIndex < questions.length) {
     handleNextButton();
@@ -98,4 +134,6 @@ nextButton.addEventListener("click", () => {
   }
 });
 
-fetchQuestions();
+document.addEventListener('DOMContentLoaded', () => {
+  fetchQuestions();
+});
