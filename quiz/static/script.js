@@ -8,7 +8,7 @@ let questions = [];
 
 async function fetchQuestions() {
   try {
-    const response = await fetch("https://opentdb.com/api.php?amount=5&category=18");
+    const response = await fetch("https://opentdb.com/api.php?amount=30&category=18");
     const data = await response.json();
     questions = data.results;
     startQuiz();
